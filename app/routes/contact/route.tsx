@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, json, Link, useLoaderData } from "@remix-run/react";
+import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { data, Form, json, Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { ChatIconComponent, EmailIconComponent, HeartIconComponent, PhoneIconComponent } from "~/components/icons/icons";
 import { CommentComponent } from "~/components/MessageComponent";
@@ -23,6 +23,10 @@ interface Counter {
   counter: number
 }
 
+export let headers: HeadersFunction = ({ loaderHeaders }) => {
+  return { "Cache-Control": "private" }
+}
+
 export async function loader({
   request,
 }: LoaderFunctionArgs) {
@@ -36,12 +40,9 @@ export async function loader({
 export async function action({
   request,
 }: ActionFunctionArgs) {
-  console.log(request);
 
   const formData = await request.formData()
   const intent = formData.get("intent")
-
-  console.log(intent)
 
   if (intent === "LIKE")
     return likeCounter.counter++;
@@ -53,7 +54,7 @@ export async function action({
 
 export default function Index() {
 
-  const { likeCounter, commentExpanded } = useLoaderData<typeof loader>();
+  let { likeCounter, commentExpanded } = useLoaderData<typeof loader>();
   const [visible, setVisible] = useState(commentExpanded);
 
   return (
