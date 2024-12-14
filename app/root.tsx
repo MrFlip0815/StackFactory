@@ -112,7 +112,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <footer id="footerSection" className="relative mt-auto m-3 shadow-xl">
           <div className="bg-gray-700 h-16 rounded-lg">
             <ul className="flex justify-evenly gap-2 sm:gap-20 place-items-center h-16 text-xs text-slate-300 ">
-              <span>© 2024 StackFactory.dev</span>
+              <span className="hidden xs:block">
+                © 2024 StackFactory.dev
+              </span>
+              <span className="xs:hidden">
+                © 2024 SF.dev
+              </span>
               <li key="1">
                 <NavLink to="/contact" className={({ isActive }) => { return "hover:underline " + (isActive ? "underline" : "") }} viewTransition>Contact</NavLink>
               </li>
@@ -123,7 +128,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <NavLink to="/impressum" className={({ isActive }) => { return "hover:underline " + (isActive ? "underline" : "") }} viewTransition>Impressum</NavLink>
               </li>
               <li key="4">
-                <NavLink to="/privacy" className={({ isActive }) => { return " hover:underline " + (isActive ? "underline" : "") }} viewTransition>Privacy Policy</NavLink>
+                <NavLink to="/privacy" className={({ isActive }) => { return " hover:underline " + (isActive ? "underline" : "") }} viewTransition>
+                  <span className="hidden xs:block">
+                    Privacy Policy
+                  </span>
+                  <span className="xs:hidden">
+                    Privacy
+                  </span>
+                </NavLink>
               </li>
             </ul>
           </div>
