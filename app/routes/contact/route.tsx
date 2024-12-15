@@ -41,10 +41,9 @@ export async function loader({
   );
 
   const likeClicked = session.get("likeClicked") || false;
+  const commentSubmitted = session.get("commentSubmitted") || false;
 
-  console.log("likes: ", likeClicked);
-
-  return { likeCounter, commentExpanded, likeClicked };
+  return { likeCounter, commentExpanded, likeClicked, commentSubmitted };
 }
 
 export async function action({
@@ -72,31 +71,45 @@ export async function action({
 
     let client = new SendMailClient({ url: "api.zeptomail.eu/v1.1/email/template", token: `Zoho-enczapikey ${apiKey}` });
 
-    client.sendMailWithTemplate({
-      "mail_template_key": "13ef.6d366c3e0a6f41a0.k1.22839750-ba3f-11ef-9863-164305ecc9b6.193c62bcd45",
-      "from": {
-        "address": "office@stackfactory.dev",
-        "name": "Website Contact Form"
-      },
-      "to": [
-        {
-          "email_address": {
-            "address": "office@stackfactory.dev",
-            "name": "Stackfactory Office"
+    try {
+      let result = await client.sendMailWithTemplate({
+        "mail_template_key": "13ef.6d366c3e0a6f41a0.k1.22839750-ba3f-11ef-9863-164305ecc9b6.193c62bcd45",
+        "from": {
+          "address": "office@stackfactory.dev",
+          "name": "Website Contact Form"
+        },
+        "to": [
+          {
+            "email_address": {
+              "address": "office@stackfactory.dev",
+              "name": "Stackfactory Office"
+            }
           }
+        ],
+        "merge_info": {
+          "from": messageFrom,
+          "message": message
         }
-      ],
-      "merge_info": {
-        "from": messageFrom,
-        "message": message
-      }
-    }).then((resp) => console.log("success")).catch((error) => console.log(error));
+      });
+
+      const session = await getSession(
+        request.headers.get("Cookie")
+      );
+
+      session.set("commentSubmitted", true)
+
+      return Response.json(true, { headers: { "Set-Cookie": await commitSession(session) } })
+
+    } catch {
+      // TODO
+      console.log("error")
+    }
   }
 }
 
 export default function Index() {
 
-  let { likeCounter, commentExpanded, likeClicked } = useLoaderData<typeof loader>();
+  let { likeCounter, commentExpanded, likeClicked, commentSubmitted } = useLoaderData<typeof loader>();
   const [visible, setVisible] = useState(commentExpanded);
 
   return (
@@ -117,13 +130,17 @@ export default function Index() {
           </div>
         </div>
         <div className="flex-col">
-          <div className="flex font-mono text-sm group cursor-pointer" onClick={() => { setVisible(!visible); }}>
+          <div className={commentSubmitted ? "flex font-mono text-sm group" : "flex font-mono text-sm group cursor-pointer"} onClick={() => { setVisible(!visible); }}>
             <div className="pr-1 group-hover">
-              <ChatIconComponent />
+              <ChatIconComponent filled={commentSubmitted} />
             </div>
-            <p className="group-hover">Leave a comment</p>
+            <p className="group-hover">
+              {
+                commentSubmitted ? "Your comment has been pushed on our Stack!" : "Leave a comment"
+              }
+            </p>
           </div>
-          {
+          {!commentSubmitted &&
             <Form method="POST" className={"w-full lg:w-2/3 xl:w-1/2 overflow-hidden transition-all ease-in " + (visible ? "opacity-100 py-3" : "h-0 py-0 opacity-0")}>
               <CommentComponent buttonName="intent" buttonValue="SEND_MESSAGE" active={true} />
             </Form>
@@ -148,7 +165,7 @@ export default function Index() {
                 </div>
                 <p className="group-hover">
                   {
-                    likeClicked ? "Stack of Likes has been increased." : "Or just leave a like? :)"
+                    likeClicked ? "Your like has been pushed on our Stack!" : "Or just leave a like? :)"
                   }
                   &nbsp;({likeCounter.counter})</p>
               </div>
