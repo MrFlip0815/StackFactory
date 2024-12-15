@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { data, Form, json, Link, useLoaderData, useNavigation } from "@remix-run/react";
-import { useState, useTransition } from "react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import { ChatIconComponent, EmailIconComponent, HeartIconComponent, PhoneIconComponent } from "~/components/icons/icons";
 import { CommentComponent } from "~/components/MessageComponent";
 import { sendMail } from "~/lib/sendMail";
@@ -65,8 +65,8 @@ export async function action({
 
   else if (intent === "SEND_MESSAGE") {
 
-    let messageFrom = formData.messageFrom;
-    let message = formData.message;
+    let messageFrom = formData.get("messageFrom");
+    let message = formData.get("message");
     let apiKey = process.env.ZOHO_EMAIL_API;
 
     let client = new SendMailClient({ url: "api.zeptomail.eu/v1.1/email/template", token: `Zoho-enczapikey ${apiKey}` });
@@ -107,6 +107,7 @@ export async function action({
   }
 }
 
+
 export default function Index() {
 
   let { likeCounter, commentExpanded, likeClicked, commentSubmitted } = useLoaderData<typeof loader>();
@@ -142,7 +143,7 @@ export default function Index() {
           </div>
           {!commentSubmitted &&
             <Form method="POST" className={"w-full lg:w-2/3 xl:w-1/2 overflow-hidden transition-all ease-in " + (visible ? "opacity-100 py-3" : "h-0 py-0 opacity-0")}>
-              <CommentComponent buttonName="intent" buttonValue="SEND_MESSAGE" active={true} />
+              <CommentComponent buttonName="intent" buttonValue="SEND_MESSAGE" />
             </Form>
           }
         </div>
