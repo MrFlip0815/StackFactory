@@ -12,6 +12,7 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
+import NewsSection from "./components/NewsSection";
 
 export const links: LinksFunction = () => [
   // { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -58,9 +59,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="flex flex-col min-h-screen">
-        {/* <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-r from-blue-700  to-purple-700 background-animate2 mix-blend-difference" />
-        <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-br from-pink-700  to-red-700 background-animate mix-blend-difference" />
-        <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-tr from-slate-700  to-green-700 background-animate2 mix-blend-difference" /> */}
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-l from-red-700  to-teal-700 background-animateHorizontal mix-blend-multiply" />
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-bl from-pink-700  to-purple-700 background-animateVertical mix-blend-difference" />
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-br from-slate-700  to-blue-700 background-animateHorizontal mix-blend-difference" />
