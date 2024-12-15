@@ -76,9 +76,7 @@ export async function action({
       }
     }).then((resp) => console.log("success")).catch((error) => console.log(error));
   }
-}
-
-return likeCounter.counter++;
+  return likeCounter.counter++;
 }
 
 export default function Index() {
