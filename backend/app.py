@@ -1,9 +1,15 @@
 import sqlite3
+import os
 from datetime import datetime, timezone
 from flask import Flask, request, make_response, g, current_app
 from utils import hash_params, rows_to_list
 
-DB_NAME = "stackFactoryLite.db"
+if "AZURE_SQLITE_DATABASE" in os.environ:
+    # running on Azure
+    DB_NAME = "/home/site/wwwroot/database.db"
+else:
+    DB_NAME = "stackFactoryLite.db"
+
 LIKES_TABLE = "likes"
 MESSAGES_TABLE = "messages"
 
