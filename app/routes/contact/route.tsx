@@ -157,11 +157,12 @@ export default function Index() {
           </div>
         </div>
 
-        <Form method="POST">
-          <div className="flex">
-            <button type="submit" name="intent" value="LIKE" disabled={likeClicked}>
-              <div className={likeClicked ? "flex font-mono text-sm group" : "flex font-mono text-sm group cursor-pointer"}>
-                <div className="pr-1 group-hover flex">
+
+        <div className="flex">
+          <Form method="POST">
+            <button type="submit" name="intent" value="LIKE" disabled={likeClicked} className="text-left">
+              <div className={"flex font-mono text-sm group" + (likeClicked ? "" : "cursor-pointer")}>
+                <div className="pr-1 group-hover">
                   <HeartIconComponent filled={likeClicked} />
                 </div>
                 <p className="group-hover">
@@ -171,8 +172,8 @@ export default function Index() {
                   &nbsp;({likeCounter.counter})</p>
               </div>
             </button>
-          </div>
-        </Form>
+          </Form>
+        </div>
       </div >
     </section >
   );
