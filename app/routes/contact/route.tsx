@@ -50,11 +50,9 @@ export async function action({
     return likeCounter.counter++;
   if (intent === "SEND_MESSAGE") {
 
-    let from = formData.messageFrom;
-    let message = "superduper";
+    let messageFrom = formData.messageFrom;
+    let message = formData.message;
     let apiKey = process.env.ZOHO_EMAIL_API;
-
-    console.log(apiKey)
 
     let client = new SendMailClient({ url: "api.zeptomail.eu/v1.1/email/template", token: `Zoho-enczapikey ${apiKey}` });
 
@@ -73,13 +71,14 @@ export async function action({
         }
       ],
       "merge_info": {
-        "from": from,
+        "from": messageFrom,
         "message": message
       }
     }).then((resp) => console.log("success")).catch((error) => console.log(error));
   }
+}
 
-  return likeCounter.counter++;
+return likeCounter.counter++;
 }
 
 export default function Index() {
@@ -89,8 +88,6 @@ export default function Index() {
   const navigation = useNavigation();
   const isActionSubmission =
     navigation.state === "submitting";
-
-  console.log(navigation.formAction);
 
   return (
     <section className="bg-slate-300 my-10 p-5 shadow-lg rounded-lg text-slate-800">

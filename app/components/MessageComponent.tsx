@@ -14,7 +14,7 @@ export const CommentComponent = ({ buttonName, buttonValue, active }: { buttonNa
                     sf commit -m
                 </p>
             </div>
-            <textarea id="messageArea" className="block focus:outline-none leading-tight w-full coding pt-4 pb-4 text-slate-200 text-sm font-mono subpixel-antialiased bg-slate-800"
+            <textarea name="message" id="messageArea" className="block focus:outline-none leading-tight w-full coding pt-4 pb-4 text-slate-200 text-sm font-mono subpixel-antialiased bg-slate-800"
                 rows={8}
                 placeholder={active ? "> enter comment here" : "> thank you for your message"} />
             <div className="flex justify-normal bg-slate-800 text-slate-300 w-full gap-4 pb-4">
