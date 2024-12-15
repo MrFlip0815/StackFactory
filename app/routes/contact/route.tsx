@@ -5,6 +5,7 @@ import { ChatIconComponent, EmailIconComponent, HeartIconComponent, PhoneIconCom
 import { CommentComponent } from "~/components/MessageComponent";
 import { sendMail } from "~/lib/sendMail";
 import { SendMailClient } from "zeptomail";
+import { commitSession, getSession } from "~/session";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,8 +36,15 @@ export async function loader({
 
   const url = new URL(request.url);
   const commentExpanded: boolean = url.searchParams.get("commentExpanded") != null;
+  const session = await getSession(
+    request.headers.get("Cookie")
+  );
 
-  return { likeCounter, commentExpanded };
+  const likeClicked = session.get("likeClicked") || false;
+
+  console.log("likes: ", likeClicked);
+
+  return { likeCounter, commentExpanded, likeClicked };
 }
 
 export async function action({
@@ -46,9 +54,17 @@ export async function action({
   const formData = await request.formData()
   const intent = formData.get("intent")
 
-  if (intent === "LIKE")
-    return likeCounter.counter++;
-  if (intent === "SEND_MESSAGE") {
+  if (intent === "LIKE") {
+    const session = await getSession(
+      request.headers.get("Cookie")
+    );
+
+    session.set("likeClicked", true)
+
+    return Response.json(likeCounter.counter++, { headers: { "Set-Cookie": await commitSession(session) } })
+  }
+
+  else if (intent === "SEND_MESSAGE") {
 
     let messageFrom = formData.messageFrom;
     let message = formData.message;
@@ -76,16 +92,12 @@ export async function action({
       }
     }).then((resp) => console.log("success")).catch((error) => console.log(error));
   }
-  return likeCounter.counter++;
 }
 
 export default function Index() {
 
-  let { likeCounter, commentExpanded } = useLoaderData<typeof loader>();
+  let { likeCounter, commentExpanded, likeClicked } = useLoaderData<typeof loader>();
   const [visible, setVisible] = useState(commentExpanded);
-  const navigation = useNavigation();
-  const isActionSubmission =
-    navigation.state === "submitting";
 
   return (
     <section className="bg-slate-300 my-10 p-5 shadow-lg rounded-lg text-slate-800">
@@ -129,14 +141,18 @@ export default function Index() {
 
         <Form method="POST">
           <div className="flex">
-            <div className="flex font-mono text-sm group cursor-pointer">
-              <button type="submit" name="intent" value="LIKE">
+            <button type="submit" name="intent" value="LIKE" disabled={likeClicked}>
+              <div className={likeClicked ? "flex font-mono text-sm group" : "flex font-mono text-sm group cursor-pointer"}>
                 <div className="pr-1 group-hover flex">
-                  <HeartIconComponent />
+                  <HeartIconComponent filled={likeClicked} />
                 </div>
-              </button>
-              <p className="group-hover">Or just leave a like? :) ({likeCounter.counter})</p>
-            </div>
+                <p className="group-hover">
+                  {
+                    likeClicked ? "Stack of Likes has been increased." : "Or just leave a like? :)"
+                  }
+                  &nbsp;({likeCounter.counter})</p>
+              </div>
+            </button>
           </div>
         </Form>
       </div >
