@@ -147,6 +147,3 @@ def add_message():
 with app.app_context():
     app.config["DATABASE"] = DB_NAME
     prepare_database()
-
-if __name__ == "__main__":
-    app.run(debug=True)
