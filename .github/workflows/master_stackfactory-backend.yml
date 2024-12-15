@@ -7,8 +7,9 @@ name: Build and deploy Python app to Azure Web App - stackfactory-backend
 on:
   push:
     branches:
-       branches: ['master']
-      - paths: ['backend/**']
+      - master
+    paths:
+      - 'backend/**'
     
   workflow_dispatch:
 
