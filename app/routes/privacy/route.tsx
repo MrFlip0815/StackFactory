@@ -19,9 +19,9 @@ export default function Index() {
                 <h1 className="text-xl">Privacy Policy</h1>
             </div>
             <div>
-                <ul className="list-inside">
+                {/* <ul className="list-inside">
                     <li className="list-disc">
-                        We do not use cookies
+                        We only use a minimal amount of cookies
                     </li>
                     <li className="list-disc">
                         We do not track by using client side JavaScript libraries
@@ -32,7 +32,7 @@ export default function Index() {
                     <li className="list-disc">
                         We will replace the google font api in the near future
                     </li>
-                </ul>
+                </ul> */}
             </div>
         </section>
     );
