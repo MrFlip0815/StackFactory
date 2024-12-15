@@ -18,11 +18,18 @@ export const CommentComponent = ({ buttonName, buttonValue }: { buttonName: stri
                 rows={8}
                 placeholder={"> enter comment here"} />
             <div className="flex justify-normal bg-slate-800 text-slate-300 w-full gap-4 pb-4">
-                <label htmlFor="messageFrom" className="font-mono text-sm text-slate-200">&gt; from:</label>
+                <div className="flex place-items-center">
+                    <label htmlFor="messageFrom" className="font-mono text-sm text-slate-200">
+                        <span className="hidden sm:block">&gt; from:</span>
+                        <span className="sm:hidden">from:</span>
+                    </label>
+                </div>
+
                 <input type="email" required name="messageFrom" className="bg-slate-800 font-mono text-sm border-gray-400 border px-2 rounded-sm text-slate-200"
                     placeholder="enter e-mail" />
-                <button type="submit" name={buttonName} value={buttonValue} className="font-mono border border-green-300 flex justify-center px-2 hover:bg-green-800 rounded-sm">
-                    <span className="text-green-300 text-sm">&gt; send</span>
+                <button type="submit" name={buttonName} value={buttonValue} className="font-mono border border-green-300 flex justify-center px-2 hover:bg-green-800 rounded-sm place-items-center">
+                    <span className="text-green-300 text-sm hidden sm:block">&gt; send</span>
+                    <span className="text-green-300 text-sm sm:hidden">send</span>
                 </button>
             </div>
         </div>
