@@ -15,10 +15,12 @@ export const handle = {
 export default function Index() {
   return (
     <section className="bg-slate-300 my-10 p-5 shadow-lg rounded-lg dark:text-slate-800">
-      <p>This is the Projects Content</p>
-      <code>
-        This is some garbage
-      </code>
+      <div className="flex justify-center mb-10">
+        <h1 className="text-xl font-mono">Projects</h1>
+      </div>
+      <article>
+        Coming soon
+      </article>
     </section>
   );
 }

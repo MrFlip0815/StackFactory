@@ -17,10 +17,10 @@ export default function Index() {
   return (
     <section className="my-10 shadow-lg rounded-lg p-5 bg-slate-300">
       <div className="flex justify-center mb-10">
-        <h1 className="text-xl font-mono">Choose your Stack</h1>
+        <h1 className="text-xl font-mono">Stack</h1>
       </div>
       <article>
-        <h2 className="textl font-mono">
+        {/* <h2 className="textl font-mono">
           Trusty and Proven (.NET Based)
         </h2>
         <div className="flex flex-wrap">
@@ -54,7 +54,8 @@ export default function Index() {
           <div className="m-2 shadow-lg">
             <StackComponent title="Choose" layer0="Touch" layer1="In" layer2="Get"></StackComponent>
           </div>
-        </div>
+        </div> */}
+        Coming soon
       </article>
     </section>
   );

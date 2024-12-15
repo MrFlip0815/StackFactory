@@ -16,13 +16,17 @@ export const handle = {
 export default function Index() {
   return (
 
-    <section className="bg-slate-300 my-10 p-5 rounded-lg shadow-lg">
-      <p>This is the Team Content</p>
-      <code>
-        This is some garbage
-      </code>
 
-      <div className="flex gap-3">
+
+    <section className="bg-slate-300 my-10 p-5 rounded-lg shadow-lg">
+      <div className="flex justify-center mb-10">
+        <h1 className="text-xl font-mono">Development</h1>
+      </div>
+      <article>
+        Coming soon
+      </article>
+
+      {/* <div className="flex gap-3">
         <div className="max-w-10 font-mono text-sm">
           <TSIconAzure></TSIconAzure>
           <p>Azure</p>
@@ -52,7 +56,7 @@ export default function Index() {
           <TSHtml5></TSHtml5>
           <p>Html5</p>
         </div>
-      </div>
+      </div> */}
 
     </section >
   );
