@@ -1,8 +1,10 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { data, Form, json, Link, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { data, Form, json, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { useState, useTransition } from "react";
 import { ChatIconComponent, EmailIconComponent, HeartIconComponent, PhoneIconComponent } from "~/components/icons/icons";
 import { CommentComponent } from "~/components/MessageComponent";
+import { sendMail } from "~/lib/sendMail";
+import { SendMailClient } from "zeptomail";
 
 export const meta: MetaFunction = () => {
   return [
@@ -46,16 +48,48 @@ export async function action({
 
   if (intent === "LIKE")
     return likeCounter.counter++;
-  if (intent === "SEND_MESSGE")
-    return likeCounter.counter++;
+  if (intent === "SEND_MESSAGE") {
 
-  return likeCounter;
+    let from = formData.messageFrom;
+    let message = "superduper";
+
+    let client = new SendMailClient({ url: "api.zeptomail.eu/v1.1/email/template", token: "Zoho-enczapikey yA6KbHtf4limxT9TQkA11ZCLoo4wrqg4jH/i5H+xLs10LNnh3KE910FsKtfpITCMiI7Zta8HatkWJY/vt4xcd8FhMtMFLJTGTuv4P2uV48xh8ciEYNYjjZqsA7UXGqNAdRglDi03TvQoWA==" });
+
+    client.sendMailWithTemplate({
+      "mail_template_key": "13ef.6d366c3e0a6f41a0.k1.22839750-ba3f-11ef-9863-164305ecc9b6.193c62bcd45",
+      "from": {
+        "address": "office@stackfactory.dev",
+        "name": "Website Contact Form"
+      },
+      "to": [
+        {
+          "email_address": {
+            "address": "office@stackfactory.dev",
+            "name": "Stackfactory Office"
+          }
+        }
+      ],
+      "merge_info": {
+        "from": from,
+        "message": message
+      }
+    }).then((resp) => console.log("success")).catch((error) => console.log(error));
+  }
+
+  return likeCounter.counter++;
 }
+
+
 
 export default function Index() {
 
   let { likeCounter, commentExpanded } = useLoaderData<typeof loader>();
   const [visible, setVisible] = useState(commentExpanded);
+  const navigation = useNavigation();
+  const isActionSubmission =
+    navigation.state === "submitting";
+
+  console.log(navigation.formAction);
 
   return (
     <section className="bg-slate-300 my-10 p-5 shadow-lg rounded-lg text-slate-800">
@@ -83,7 +117,7 @@ export default function Index() {
           </div>
           {
             <Form method="POST" className={"w-full lg:w-2/3 xl:w-1/2 overflow-hidden transition-all ease-in " + (visible ? "opacity-100 py-3" : "h-0 py-0 opacity-0")}>
-              <CommentComponent buttonName="intent" buttonValue="SEND_MESSAGE" />
+              <CommentComponent buttonName="intent" buttonValue="SEND_MESSAGE" active={true} />
             </Form>
           }
         </div>
@@ -97,15 +131,15 @@ export default function Index() {
           </div>
         </div>
 
-        <Form method="post">
+        <Form method="POST">
           <div className="flex">
             <div className="flex font-mono text-sm group cursor-pointer">
               <button type="submit" name="intent" value="LIKE">
                 <div className="pr-1 group-hover flex">
                   <HeartIconComponent />
-                  <p className="group-hover">Or just leave a like? :) ({likeCounter.counter})</p>
                 </div>
               </button>
+              <p className="group-hover">Or just leave a like? :) ({likeCounter.counter})</p>
             </div>
           </div>
         </Form>
