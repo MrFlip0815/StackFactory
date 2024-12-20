@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from flask import Flask, request, make_response, g, current_app, jsonify
 from utils import hash_params, rows_to_list
 import jwt
+import logging
 
 if "AZURE_SQLITE_DATABASE" in os.environ:
     # running on Azure
@@ -100,6 +101,8 @@ def add_or_update_like():
     result = db.execute(
         f"SELECT hash, date FROM {LIKES_TABLE} WHERE hash = '{hashed}'"
     ).fetchone()
+
+    logging.info(f"{hashed} :: {payload["host"]} :: {payload["userAgent"]}")
 
     if result is None:
         db.execute(
