@@ -58,7 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen bg-white">
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-l from-red-700  to-teal-700 background-animateHorizontal mix-blend-multiply" />
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-bl from-pink-700  to-purple-700 background-animateVertical mix-blend-difference" />
         <div className="fixed top-0 w-full bottom-0 min-h-screen bg-gradient-to-br from-slate-700  to-blue-700 background-animateHorizontal mix-blend-difference" />
