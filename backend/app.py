@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+from functools import wraps
 from datetime import datetime, timezone
 from flask import Flask, request, make_response, g, current_app, jsonify
 from utils import hash_params, rows_to_list
@@ -27,7 +28,8 @@ USER = "api"
 TOKEN_VALIDITY_SECONDS = os.environ["TOKEN_VALIDITY_SECONDS"]
 
 
-def token_required(f):
+def token_required(func):
+    @wraps(func)
     def decorated(*args, **kwargs):
         if "Authorization" not in request.headers:
             return jsonify({"error": "Authorization Header missing"}), 403
@@ -41,7 +43,7 @@ def token_required(f):
             jwt.decode(tokenized[1], SECRET_KEY, algorithms="HS256")
         except Exception as error:
             return jsonify({"error": f"{error}"}), 403
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated
 
@@ -81,6 +83,7 @@ def get_likes():
 
 
 @app.route("/addOrUpdateLike", methods=["POST"])
+@token_required
 def add_or_update_like():
 
     payload = request.json
@@ -124,6 +127,7 @@ def add_or_update_like():
 
 
 @app.route("/messages", methods=["GET"])
+@token_required
 def get_messages():
     db = get_database()
     result = db.execute(
@@ -150,6 +154,7 @@ def get_token():
 
 
 @app.route("/addMessage", methods=["POST"])
+@token_required
 def add_message():
     payload = request.json
 
