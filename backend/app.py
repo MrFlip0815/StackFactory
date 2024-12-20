@@ -5,8 +5,12 @@ from functools import wraps
 from datetime import datetime, timezone
 from logging.config import dictConfig
 from flask import Flask, request, make_response, g, current_app, jsonify
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry import trace
 from utils import hash_params, rows_to_list
 import jwt
+
+configure_azure_monitor()
 
 dictConfig(
     {
