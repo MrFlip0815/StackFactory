@@ -1,8 +1,10 @@
 import sqlite3
 import os
+
 from datetime import datetime, timezone
-from flask import Flask, request, make_response, g, current_app
+from flask import Flask, request, make_response, g, current_app, jsonify
 from utils import hash_params, rows_to_list
+import jwt
 
 if "AZURE_SQLITE_DATABASE" in os.environ:
     # running on Azure
@@ -14,6 +16,34 @@ LIKES_TABLE = "likes"
 MESSAGES_TABLE = "messages"
 
 app = Flask(__name__)
+
+
+if "SECRET_KEY" not in os.environ or "TOKEN_VALIDITY_SECONDS" not in os.environ:
+    exit("missing secret or token expiration")
+
+
+SECRET_KEY = os.environ["SECRET_KEY"]
+USER = "api"
+TOKEN_VALIDITY_SECONDS = os.environ["TOKEN_VALIDITY_SECONDS"]
+
+
+def token_required(f):
+    def decorated(*args, **kwargs):
+        if "Authorization" not in request.headers:
+            return jsonify({"error": "Authorization Header missing"}), 403
+
+        tokenized = request.headers["Authorization"].split(" ")
+
+        if "Bearer" not in tokenized:
+            return jsonify({"error": "Authorization type is Bearer"}), 403
+
+        try:
+            jwt.decode(tokenized[1], SECRET_KEY, algorithms="HS256")
+        except Exception as error:
+            return jsonify({"error": f"{error}"}), 403
+        return f(*args, **kwargs)
+
+    return decorated
 
 
 def close_db(e=None) -> None:
@@ -42,6 +72,7 @@ def prepare_database() -> None:
 
 
 @app.route("/likes", methods=["GET"])
+@token_required
 def get_likes():
     db = get_database()
     result = db.execute(f"SELECT COUNT(*) FROM {LIKES_TABLE}").fetchone()
@@ -50,6 +81,7 @@ def get_likes():
 
 
 @app.route("/addOrUpdateLike", methods=["POST"])
+@token_required
 def add_or_update_like():
 
     payload = request.json
@@ -93,6 +125,7 @@ def add_or_update_like():
 
 
 @app.route("/messages", methods=["GET"])
+@token_required
 def get_messages():
     db = get_database()
     result = db.execute(
@@ -102,7 +135,24 @@ def get_messages():
     return make_response(rows_to_list(result), 200)
 
 
+from datetime import timedelta
+
+
+@app.route("/getToken")
+def get_token():
+    token = jwt.encode(
+        {
+            "user": USER,
+            "exp": datetime.now(timezone.utc)
+            + timedelta(seconds=TOKEN_VALIDITY_SECONDS),
+        },
+        SECRET_KEY,
+    )
+    return token
+
+
 @app.route("/addMessage", methods=["POST"])
+@token_required
 def add_message():
     payload = request.json
 
