@@ -81,7 +81,6 @@ def get_likes():
 
 
 @app.route("/addOrUpdateLike", methods=["POST"])
-@token_required
 def add_or_update_like():
 
     payload = request.json
@@ -125,7 +124,6 @@ def add_or_update_like():
 
 
 @app.route("/messages", methods=["GET"])
-@token_required
 def get_messages():
     db = get_database()
     result = db.execute(
@@ -152,7 +150,6 @@ def get_token():
 
 
 @app.route("/addMessage", methods=["POST"])
-@token_required
 def add_message():
     payload = request.json
 
