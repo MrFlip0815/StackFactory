@@ -25,7 +25,7 @@ if "SECRET_KEY" not in os.environ or "TOKEN_VALIDITY_SECONDS" not in os.environ:
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 USER = "api"
-TOKEN_VALIDITY_SECONDS = os.environ["TOKEN_VALIDITY_SECONDS"]
+TOKEN_VALIDITY_SECONDS = int(os.environ["TOKEN_VALIDITY_SECONDS"])
 
 
 def token_required(func):
