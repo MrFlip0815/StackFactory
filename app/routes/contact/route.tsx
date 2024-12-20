@@ -63,11 +63,9 @@ export async function action({
 
     session.set("likeClicked", true)
 
-    console.error(request);
-
     const payload = {
       "userAgent": request.headers.get("user-agent"),
-      "host": request.headers.get("fastly-client-ip"),
+      "host": request.headers.get("fastly-client-ip"), // fastly specific implementation
     }
 
     const apiKey = process.env.BACKEND_API_KEY;
