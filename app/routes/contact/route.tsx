@@ -3,7 +3,6 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { ChatIconComponent, EmailIconComponent, HeartIconComponent, PhoneIconComponent } from "~/components/icons/icons";
 import { CommentComponent } from "~/components/MessageComponent";
-import { sendMail } from "~/lib/sendMail";
 import { SendMailClient } from "zeptomail";
 import { commitSession, getSession } from "~/session";
 
@@ -19,11 +18,11 @@ export const handle = {
 };
 
 const likeCounter: Counter = {
-  counter: 0,
+  count: 0,
 }
 
 interface Counter {
-  counter: number
+  count: number
 }
 
 export let headers: HeadersFunction = ({ loaderHeaders }) => {
@@ -39,6 +38,10 @@ export async function loader({
   const session = await getSession(
     request.headers.get("Cookie")
   );
+
+  const realLikesResponse = await fetch(`${process.env.BACKEND_URL}/likes`, { headers: { "Authorization": `Bearer ${process.env.BACKEND_API_KEY}` } })
+
+  likeCounter.count = (await realLikesResponse.json() as Counter).count;
 
   const likeClicked = session.get("likeClicked") || false;
   const commentSubmitted = session.get("commentSubmitted") || false;
@@ -60,7 +63,17 @@ export async function action({
 
     session.set("likeClicked", true)
 
-    return Response.json(likeCounter.counter++, { headers: { "Set-Cookie": await commitSession(session) } })
+    const payload = {
+      "userAgent": request.headers.get("user-agent"),
+      "host": request.headers.get("host"),
+    }
+
+    const apiKey = process.env.BACKEND_API_KEY;
+    const url = process.env.BACKEND_URL;
+
+    const result = await fetch(`${process.env.BACKEND_URL}/addOrUpdateLike`, { body: JSON.stringify(payload), method: "POST", headers: { "Authorization": `Bearer ${process.env.BACKEND_API_KEY}`, "content-type": "application/json" } })
+
+    return Response.json(likeCounter.count++, { headers: { "Set-Cookie": await commitSession(session) } })
   }
 
   else if (intent === "SEND_MESSAGE") {
@@ -169,7 +182,7 @@ export default function Index() {
                   {
                     likeClicked ? "Your like has been pushed on our Stack!" : "Or just leave a like? :)"
                   }
-                  &nbsp;({likeCounter.counter})</p>
+                  &nbsp;({likeCounter.count})</p>
               </div>
             </button>
           </Form>
