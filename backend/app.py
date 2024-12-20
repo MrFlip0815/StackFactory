@@ -3,10 +3,29 @@ import os
 
 from functools import wraps
 from datetime import datetime, timezone
+from logging.config import dictConfig
 from flask import Flask, request, make_response, g, current_app, jsonify
 from utils import hash_params, rows_to_list
 import jwt
-import logging
+
+dictConfig(
+    {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+            }
+        },
+        "handlers": {
+            "wsgi": {
+                "class": "logging.StreamHandler",
+                "stream": "ext://flask.logging.wsgi_errors_stream",
+                "formatter": "default",
+            }
+        },
+        "root": {"level": "INFO", "handlers": ["wsgi"]},
+    }
+)
 
 if "AZURE_SQLITE_DATABASE" in os.environ:
     # running on Azure
@@ -102,7 +121,7 @@ def add_or_update_like():
         f"SELECT hash, date FROM {LIKES_TABLE} WHERE hash = '{hashed}'"
     ).fetchone()
 
-    logging.info(f"{hashed} :: {payload["host"]} :: {payload["userAgent"]}")
+    app.logger.info(f"{hashed} :: {payload["host"]} :: {payload["userAgent"]}")
 
     if result is None:
         db.execute(
