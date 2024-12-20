@@ -91,6 +91,18 @@ def get_likes():
     return make_response({"count": result[0]}, 200)
 
 
+@app.route("/likes", methods=["DELETE"])
+@token_required
+def deletet_likes():
+    db = get_database()
+    db.execute(f"DELETE FROM {LIKES_TABLE}").fetchone()
+
+    db.commit()
+    db.close()
+
+    return make_response({"count": 0}, 200)
+
+
 @app.route("/addOrUpdateLike", methods=["POST"])
 @token_required
 def add_or_update_like():
