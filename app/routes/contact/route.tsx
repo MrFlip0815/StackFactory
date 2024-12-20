@@ -67,7 +67,7 @@ export async function action({
 
     const payload = {
       "userAgent": request.headers.get("user-agent"),
-      "host": request.headers.get("host"),
+      "host": request.headers.get("fastly-client-ip"),
     }
 
     const apiKey = process.env.BACKEND_API_KEY;
