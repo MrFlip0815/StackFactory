@@ -63,6 +63,8 @@ export async function action({
 
     session.set("likeClicked", true)
 
+    console.error(request);
+
     const payload = {
       "userAgent": request.headers.get("user-agent"),
       "host": request.headers.get("host"),
