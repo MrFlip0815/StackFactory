@@ -21,7 +21,7 @@ const TerminalComponent = () => {
             <span className="text-white">Stack</span>
             <span className="text-slate-300">Factory</span>
             <span className="text-purple-400">.dev</span>
-            : A software engineering company with a focus on:
+            : we are software engineers with a focus on:
           </p>
           <div><br /></div>
           <div className="flex justify-center"><p>Skill</p></div>
