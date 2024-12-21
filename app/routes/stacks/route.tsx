@@ -4,7 +4,7 @@ import StackComponent from "~/components/stack";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "StackFactory Mission" },
+    { title: "StackFactory Stacks" },
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
