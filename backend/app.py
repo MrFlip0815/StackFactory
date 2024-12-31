@@ -1,3 +1,4 @@
+from datetime import timedelta
 import sqlite3
 import os
 
@@ -78,7 +79,8 @@ def prepare_database() -> None:
     db = get_database()
     db.execute(f"CREATE TABLE IF NOT EXISTS {LIKES_TABLE} (hash, date)")
     db.execute(
-        f"CREATE TABLE IF NOT EXISTS {MESSAGES_TABLE} (hash, date, message, from_sender)"
+        f"CREATE TABLE IF NOT EXISTS {
+            MESSAGES_TABLE} (hash, date, message, from_sender)"
     )
 
 
@@ -126,18 +128,21 @@ def add_or_update_like():
 
     if result is None:
         db.execute(
-            f"INSERT INTO {LIKES_TABLE} VALUES ('{hashed}','{datetime.now(timezone.utc)}')"
+            f"INSERT INTO {LIKES_TABLE} VALUES ('{hashed}','{
+                datetime.now(timezone.utc)}')"
         )
         db.commit()
         db.close()
 
         return make_response({}, 201)
 
-    time_delta = datetime.now(timezone.utc) - datetime.fromisoformat(result["date"])
+    time_delta = datetime.now(timezone.utc) - \
+        datetime.fromisoformat(result["date"])
 
     if time_delta.total_seconds() > 10:
         db.execute(
-            f"UPDATE {LIKES_TABLE} SET date = '{datetime.now(timezone.utc)}' WHERE hash = '{hashed}'"
+            f"UPDATE {LIKES_TABLE} SET date = '{
+                datetime.now(timezone.utc)}' WHERE hash = '{hashed}'"
         )
         db.commit()
         db.close()
@@ -158,9 +163,6 @@ def get_messages():
     ).fetchall()
 
     return make_response(rows_to_list(result), 200)
-
-
-from datetime import timedelta
 
 
 @app.route("/getToken")
@@ -211,7 +213,8 @@ def add_message():
 
     if result is None:
         db.execute(
-            f"INSERT INTO {MESSAGES_TABLE} VALUES ('{hashed}','{datetime.now(timezone.utc)}', '{message}', '{from_sender}')"
+            f"INSERT INTO {MESSAGES_TABLE} VALUES ('{hashed}','{datetime.now(
+                timezone.utc)}', '{message}', '{from_sender}')"
         )
         db.commit()
         db.close()
@@ -220,7 +223,8 @@ def add_message():
 
     db.close()
 
-    time_delta = datetime.now(timezone.utc) - datetime.fromisoformat(result["date"])
+    time_delta = datetime.now(timezone.utc) - \
+        datetime.fromisoformat(result["date"])
 
     if time_delta.total_seconds() < 10:
         return make_response({}, 400)
