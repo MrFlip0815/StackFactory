@@ -1,4 +1,4 @@
-# Welcome to Remix!
+# Welcome to StackFactory
 
 - 📖 [Remix docs](https://remix.run/docs)
 
