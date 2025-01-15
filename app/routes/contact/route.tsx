@@ -33,8 +33,11 @@ export async function loader({
   request,
 }: LoaderFunctionArgs) {
 
+
   const url = new URL(request.url);
-  const commentExpanded: boolean = url.searchParams.get("commentExpanded") != null;
+  const param = url.searchParams.get("commentExpanded");
+  const commentExpanded: boolean = param !== null && param === "true"
+
   const session = await getSession(
     request.headers.get("Cookie")
   );
