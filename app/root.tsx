@@ -110,10 +110,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="bg-gray-700 h-16 rounded-lg">
             <ul className="flex justify-evenly gap-2 sm:gap-20 place-items-center h-16 text-xs text-slate-300 ">
               <span className="hidden xs:block">
-                © 2024 StackFactory.dev
+                © 2025 StackFactory.dev
               </span>
               <span className="xs:hidden">
-                © 2024 SF.dev
+                © 2025 SF.dev
               </span>
               <li key="1">
                 <NavLink to="/contact" className={({ isActive }) => { return "hover:underline " + (isActive ? "underline" : "") }} viewTransition>Contact</NavLink>
